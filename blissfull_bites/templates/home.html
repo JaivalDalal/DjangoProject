@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blissfull Bites</title>
+    <link rel="stylesheet" type="text/css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/styles/header.css">
+    <link rel="stylesheet" type="text/css" href="/static/styles/footer.css">
+    <link rel="stylesheet" type="text/css" href="/static/styles/slider.css">
+    <link rel="stylesheet" type="text/css" href="/static/styles/categories.css">
+
+    {% include 'links.html' %}
+    <style>
+        .confirm-box {
+            display: none;
+        }
+
+        .container {
+            background-color: #fbbcc683;
+            padding: 30px;
+        }
+
+        .category-desc .category-info {
+            color: #000;
+            padding: 10px 0;
+            text-align: justify;
+        }
+
+        .view-more {
+            display: block;
+            margin: auto;
+            text-align: center;
+            text-decoration: none;
+            background-color: #b2ddd3;
+            color: #a9802a;
+            border: 2px solid #a9802a;
+            border-radius: 20px;
+            padding: 15px 30px;
+            width: max-content;
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'header.html' %}
+    <div class="container" style="background: none;">
+        <h1>best sellers</h1>
+        <div class="product">
+            <button class="pre-btn"><img src="/static/images/right.png" width="100px" height="100px" alt=""></button>
+            <button class="nxt-btn"><img src="/static/images/left.png" width="100px" height="100px" alt=""></button>
+
+            <div class="product-container">
+                {% for product in bestSellers %}
+                <div class="product-card">
+                    <a href="/productDetails/{{product.id}}">
+                        <div class="product-image">
+                            <img src="/media/{{product.product_image}}" class="product-thumb">
+                        </div>
+                        <h3 class="product-name">{{product.name}}</h3>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const productContainers = [...document.querySelectorAll('.product-container')];
+        const nxtBtn = [...document.querySelectorAll('.nxt-btn')];
+        const preBtn = [...document.querySelectorAll('.pre-btn')];
+
+        productContainers.forEach((item, i) => {
+            let containerDimensions = item.getBoundingClientRect();
+            let containerWidth = containerDimensions.width;
+
+            nxtBtn[i].addEventListener('click', () => {
+                item.scrollLeft += containerWidth;
+            })
+
+            preBtn[i].addEventListener('click', () => {
+                item.scrollLeft -= containerWidth;
+            })
+        })
+    </script>
+
+    <div class="container">
+        <h1>Our products</h1>
+        <div class="categories">
+            {% for c in categories %}
+            <a href="/products/{{c.name}}" class="category-link">
+                <!-- <div class="category"> -->
+                <img src="/media/{{c.thumbnail_image}}" class="category-thumbnail">
+                <div class="category-desc">
+                    <h2 class="category-name">{{c.name}}</h2>
+                    <!-- <p class="category-info">{{c.description}}</p> -->
+                </div>
+                <!-- </div> -->
+            </a>
+            {% endfor %}
+        </div>
+        <a href="{% url 'categories' %}" class="view-more">View More</a>
+    </div>
+
+    {% include 'footer.html' %}
+
+
+    <div class="confirm-box">
+        <h2 class="confirm-msg"><i class="fa-solid fa-circle-exclamation"></i>Signing out will remove your account and
+            all the data related to it. Do you want to proceed?</h2>
+        <a href="{% url 'signOut' %}">Yes</a>
+        <button class="cancel-btn">No</button>
+    </div>
+
+    {% if loginID != None %}
+    <script>
+        document.querySelector('.site-menu').innerHTML += "<li class='menu-item user-menu'><a id='menu-link'><i class='fa-regular fa-circle-user'></i></a><ul class='user-options-menu'><li class='menu-item'><a href='{% url 'logOut' %}' class='menu-link'>Log Out</a></li><li class='menu-item'><a id='confirm-sign-out' class='menu-link'>Sign Out</a></li><li class='menu-item'><a href='{% url 'editProfile' %}' class='menu-link'>Edit Profile</a></li><li class='menu-item'><a href='{% url 'orderHistory' %}' class='menu-link'>My Orders</a></li></ul></li> <li class='menu-item'><a href='{% url 'openCart' %}' class='menu-link'><i class='fa fa-solid fa-cart-plus'></i></a></li>";
+
+        document.getElementById('confirm-sign-out').addEventListener('click', function () {
+            document.querySelector('.confirm-box').style.display = "block";
+        });
+        document.querySelector('.cancel-btn').addEventListener('click', function () {
+            document.querySelector('.confirm-box').style.display = "none";
+        });
+    </script>
+    {% endif %}
+
+</body>
+
+</html>
