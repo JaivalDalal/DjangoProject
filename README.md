@@ -1,0 +1,1 @@
+This is an e-commerce webapp built using Django Framework of Python.
